@@ -3,6 +3,8 @@ function makeGamesArray() {
     {
       id: 1,
       title: "First test game",
+      cover:
+        "https://images-na.ssl-images-amazon.com/images/I/5122wZuQ%2BhL.jpg",
       avg_rating: 6,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.",
@@ -26,6 +28,8 @@ function makeGamesArray() {
       id: 3,
       title: "Third test game",
       avg_rating: 4,
+      cover:
+        "https://upload.wikimedia.org/wikipedia/en/thumb/9/92/Halo2-cover.png/220px-Halo2-cover.png",
       description:
         "Mauris erat justo, facilisis eget lacus convallis, feugiat luctus massa. Nullam molestie ullamcorper nisl sed posuere. Aliquam erat volutpat. Morbi sed suscipit neque, eu fermentum dolor. Vivamus luctus, eros eu finibus auctor, arcu erat pretium sem, ut tempor mi quam vitae dolor. Mauris feugiat mi in imperdiet commodo.",
       rated: "M",
@@ -59,4 +63,28 @@ function makeGamesArray() {
   ];
 }
 
-module.exports = { makeGamesArray };
+function makeMaliciousGame() {
+  const maliciousGame = {
+    id: 911,
+    title: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    cover:
+      "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/30dd9067302871.5b34f741efc0b.jpg",
+    avg_rating: 2,
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    rated: "U",
+    platforms: "Xbox",
+    date_added: new Date().toISOString()
+  };
+  const expectedGame = {
+    ...maliciousGame,
+    title:
+      'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`
+  };
+  return {
+    maliciousGame,
+    expectedGame
+  };
+}
+
+module.exports = { makeGamesArray, makeMaliciousGame };
