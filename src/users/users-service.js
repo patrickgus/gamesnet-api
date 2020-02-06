@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
-const xss = require("xss");
 
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
 
 const UsersService = {
+  getAllUsers(knex) {
+    return knex.select("*").from("gamesnet_users");
+  },
   hasUserWithUserName(db, username) {
     return db("gamesnet_users")
       .where({ username })
@@ -18,8 +20,8 @@ const UsersService = {
       .then(([user]) => user);
   },
   validatePassword(password) {
-    if (password.length <= 8) {
-      return "Password be at least 8 characters";
+    if (password.length < 8) {
+      return "Password be longer than 8 characters";
     }
     if (password.length > 72) {
       return "Password be less than 72 characters";
@@ -35,13 +37,22 @@ const UsersService = {
   hashPassword(password) {
     return bcrypt.hash(password, 12);
   },
-  serializeUser(user) {
-    return {
-      id: user.id,
-      fullname: xss(user.fullname),
-      username: xss(user.username),
-      date_joined: new Date(user.date_joined)
-    };
+  getById(knex, id) {
+    return knex
+      .from("gamesnet_users")
+      .select("*")
+      .where("id", id)
+      .first();
+  },
+  deleteUser(knex, id) {
+    return knex("gamesnet_users")
+      .where({ id })
+      .delete();
+  },
+  updateUser(knex, id, newUserFields) {
+    return knex("gamesnet_users")
+      .where({ id })
+      .update(newUserFields);
   }
 };
 
