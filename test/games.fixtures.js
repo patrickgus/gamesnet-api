@@ -10,7 +10,8 @@ function makeGamesArray() {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.",
       rated: "M",
       platforms: "Playstaion",
-      date_added: "2029-01-22T16:28:32.615Z"
+      date_added: "2029-01-22T16:28:32.615Z",
+      poster: 2
     },
     {
       id: 2,
@@ -22,7 +23,8 @@ function makeGamesArray() {
         "Sed pharetra, ante vel aliquet viverra, augue nunc malesuada dui, vel sollicitudin enim sem at urna. Integer pharetra sodales dolor, id accumsan purus aliquam sed. Donec at magna convallis, varius turpis in, elementum eros. Aliquam erat volutpat. Ut at leo eu ligula fermentum fringilla malesuada ut nisl.",
       rated: "T",
       platforms: "Playstation, Xbox, PC, Mobile",
-      date_added: "2029-01-22T16:28:32.615Z"
+      date_added: "2029-01-22T16:28:32.615Z",
+      poster: 1
     },
     {
       id: 3,
@@ -34,7 +36,8 @@ function makeGamesArray() {
         "Mauris erat justo, facilisis eget lacus convallis, feugiat luctus massa. Nullam molestie ullamcorper nisl sed posuere. Aliquam erat volutpat. Morbi sed suscipit neque, eu fermentum dolor. Vivamus luctus, eros eu finibus auctor, arcu erat pretium sem, ut tempor mi quam vitae dolor. Mauris feugiat mi in imperdiet commodo.",
       rated: "M",
       platforms: "Xbox, Windows",
-      date_added: "2029-01-22T16:28:32.615Z"
+      date_added: "2029-01-22T16:28:32.615Z",
+      poster: 2
     },
     {
       id: 4,
@@ -46,7 +49,8 @@ function makeGamesArray() {
         "In ut scelerisque leo, non ultricies velit. Nam ullamcorper tortor lorem, eu tincidunt turpis cursus porta. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer condimentum tempus ligula eget pretium. Duis id diam eu est egestas efficitur non consectetur ex.",
       rated: "E",
       platforms: "Playstation, Xbox, PC",
-      date_added: "1919-12-22T16:28:32.615Z"
+      date_added: "1919-12-22T16:28:32.615Z",
+      poster: 2
     },
     {
       id: 5,
@@ -58,7 +62,8 @@ function makeGamesArray() {
         "Suspendisse viverra sodales metus tincidunt interdum. Phasellus nec tellus euismod, mollis turpis vel, scelerisque odio. Integer ante purus, lobortis a tincidunt sit amet, semper lobortis magna. Maecenas malesuada volutpat luctus. Praesent convallis metus id leo ornare porttitor non quis dui. Nunc in risus dignissim, iaculis lacus sed, cursus diam.",
       rated: "T",
       platforms: "Playstation, Xbox, PC, Switch, Stadia",
-      date_added: "1919-12-22T16:28:32.615Z"
+      date_added: "1919-12-22T16:28:32.615Z",
+      poster: 1
     }
   ];
 }
