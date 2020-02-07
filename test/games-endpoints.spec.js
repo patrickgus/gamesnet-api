@@ -73,7 +73,7 @@ describe("Games Endpoints", function() {
         const gameId = 123456;
         return supertest(app)
           .get(`/api/games/${gameId}`)
-          .expect(404, { error: { message: `Game doesn't exist` } });
+          .expect(404, { error: `Game doesn't exist` });
       });
     });
 
@@ -208,7 +208,7 @@ describe("Games Endpoints", function() {
         const gameId = 123456;
         return supertest(app)
           .delete(`/api/games/${gameId}`)
-          .expect(404, { error: { message: `Game doesn't exist` } });
+          .expect(404, { error: `Game doesn't exist` });
       });
     });
 
@@ -240,7 +240,7 @@ describe("Games Endpoints", function() {
         const gameId = 123456;
         return supertest(app)
           .patch(`/api/games/${gameId}`)
-          .expect(404, { error: { message: `Game doesn't exist` } });
+          .expect(404, { error: `Game doesn't exist` });
       });
     });
 
