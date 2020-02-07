@@ -1,0 +1,8 @@
+INSERT INTO gamesnet_reviews(game_id, user_id, title, rating, review)
+VALUES
+  (6, 1, 'The greatest game of all time', 10, 
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fermentum lorem malesuada, posuere felis sed, ultrices orci. Phasellus varius neque eget lobortis mollis. Cras non venenatis nibh. Maecenas in nulla ut tellus dictum mollis. Maecenas libero velit, accumsan et ultrices vel, dapibus venenatis nibh. Sed nisi tellus, ullamcorper non neque eu, pharetra mattis risus. Sed metus ipsum, dignissim nec risus eget, pellentesque tincidunt enim. Quisque dui urna, pellentesque eu odio eget, imperdiet rutrum magna.'),
+  (6, 2, 'My favorite game', 9, 
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fermentum lorem malesuada, posuere felis sed, ultrices orci. Phasellus varius neque eget lobortis mollis. Cras non venenatis nibh. Maecenas in nulla ut tellus dictum mollis. Maecenas libero velit, accumsan et ultrices vel, dapibus venenatis nibh. Sed nisi tellus, ullamcorper non neque eu, pharetra mattis risus. Sed metus ipsum, dignissim nec risus eget, pellentesque tincidunt enim. Quisque dui urna, pellentesque eu odio eget, imperdiet rutrum magna.'),
+  (6, 3, 'Simply, the best', 10, 
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fermentum lorem malesuada, posuere felis sed, ultrices orci. Phasellus varius neque eget lobortis mollis. Cras non venenatis nibh. Maecenas in nulla ut tellus dictum mollis. Maecenas libero velit, accumsan et ultrices vel, dapibus venenatis nibh. Sed nisi tellus, ullamcorper non neque eu, pharetra mattis risus. Sed metus ipsum, dignissim nec risus eget, pellentesque tincidunt enim. Quisque dui urna, pellentesque eu odio eget, imperdiet rutrum magna.');
