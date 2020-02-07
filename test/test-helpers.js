@@ -210,6 +210,7 @@ module.exports = {
   makeGamesFixtures,
   cleanTables,
   cleanTables,
+  seedUsers,
   seedGamesTables,
   seedMaliciousGame
 };
