@@ -7,6 +7,7 @@ const { NODE_ENV, CLIENT_ORIGIN } = require("./config");
 const gamesRouter = require("./games/games-router");
 const usersRouter = require("./users/users-router");
 const reviewsRouter = require("./reviews/reviews-router");
+const errorHandler = require("./error-handler");
 
 const app = express();
 
@@ -24,15 +25,6 @@ app.use("/api/games", gamesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/reviews", reviewsRouter);
 
-app.use((error, req, res, next) => {
-  let response;
-  if (NODE_ENV === "production") {
-    response = { error: { message: "server error" } };
-  } else {
-    console.error(error);
-    response = { message: error.message, error };
-  }
-  res.status(500).json(response);
-});
+app.use(errorHandler);
 
 module.exports = app;
