@@ -62,18 +62,48 @@ gamesRouter
       .catch(next);
   });
 
-gamesRouter.route("/:game_id").get((req, res, next) => {
-  GamesService.getById(req.app.get("db"), req.params.game_id)
-    .then(game => {
-      if (!game) {
-        return res.status(404).json({
-          error: { message: `Game doesn't exist` }
-        });
-      }
-      res.json(serializeGame(game));
-      next();
-    })
-    .catch(next);
-});
+  gamesRouter
+  .route("/:game_id")
+  .all((req, res, next) => {
+    GamesService.getById(req.app.get("db"), req.params.game_id)
+      .then(game => {
+        if (!game) {
+          return res.status(404).json({
+            error: { message: `Game doesn't exist` }
+          });
+        }
+        res.game = game;
+        next();
+      })
+      .catch(next);
+  })
+  .get((req, res, next) => {
+    res.json(serializeGame(res.game));
+  })
+  .delete((req, res, next) => {
+    GamesService.deleteGame(req.app.get("db"), req.params.game_id)
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch(jsonParser, (req, res, next) => {
+    const { title, cover, description, rated, platforms } = req.body;
+    const gameToUpdate = { title, cover, description, rated, platforms };
+
+    const numberOfValues = Object.values(gameToUpdate).filter(Boolean).length;
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must contain either 'title', 'cover', 'description', 'rated', or 'platforms'`
+        }
+      });
+
+    GamesService.updateGame(req.app.get("db"), req.params.game_id, gameToUpdate)
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
+      .catch(next);
+  });
 
 module.exports = gamesRouter;
