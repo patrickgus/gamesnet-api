@@ -2,10 +2,10 @@ const knex = require("knex");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
-describe("Games Endpoints", function() {
+describe.only("Games Endpoints", function() {
   let db;
 
-  const { testUsers, testGames } = helpers.makeGamesFixtures();
+  const { testUsers, testGames, testReviews } = helpers.makeGamesFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -32,12 +32,12 @@ describe("Games Endpoints", function() {
 
     context("Given there are games in the database", () => {
       beforeEach("insert games", () =>
-        helpers.seedGamesTables(db, testUsers, testGames)
+        helpers.seedGamesTables(db, testUsers, testGames, testReviews)
       );
 
       it("responds with 200 and all of the games", () => {
         const expectedGames = testGames.map(game =>
-          helpers.makeExpectedGame(game)
+          helpers.makeExpectedGame(testUsers, game)
         );
         return supertest(app)
           .get("/api/games")
@@ -79,12 +79,12 @@ describe("Games Endpoints", function() {
 
     context("Given there are games in the database", () => {
       beforeEach("insert games", () =>
-        helpers.seedGamesTables(db, testUsers, testGames)
+        helpers.seedGamesTables(db, testUsers, testGames, testReviews)
       );
 
       it("responds with 200 and the specified game", () => {
         const gameId = 2;
-        const expectedGame = helpers.makeExpectedGame(testGames[gameId - 1]);
+        const expectedGame = helpers.makeExpectedGame(testUsers, testGames[gameId - 1]);
 
         return supertest(app)
           .get(`/api/games/${gameId}`)
@@ -113,6 +113,43 @@ describe("Games Endpoints", function() {
       });
     });
   });
+
+  describe(`GET /api/games/:game_id/reviews`, () => {
+    context(`Given no games`, () => {
+      beforeEach(() =>
+        helpers.seedUsers(db, testUsers)
+      )
+
+      it(`responds with 404`, () => {
+        const gameId = 123456
+        return supertest(app)
+          .get(`/api/games/${gameId}/reviews`)
+          .expect(404, { error: `Game doesn't exist` })
+      })
+    })
+
+    context('Given there are reviews for game in the database', () => {
+      beforeEach('insert games', () =>
+        helpers.seedGamesTables(
+          db,
+          testUsers,
+          testGames,
+          testReviews,
+        )
+      )
+
+      it('responds with 200 and the specified reviews', () => {
+        const gameId = 1
+        const expectedReviews = helpers.makeExpectedGameReviews(
+          testUsers, gameId, testReviews
+        )
+
+        return supertest(app)
+          .get(`/api/games/${gameId}/reviews`)
+          .expect(200, expectedReviews)
+      })
+    })
+  })
 
   describe(`POST /api/games`, () => {
     it(`creates an game, responding with 201 and the new game`, function() {
@@ -217,7 +254,7 @@ describe("Games Endpoints", function() {
       it("responds with 204 and removes the game", () => {
         const idToRemove = 2;
         const expectedGames = testGames
-          .map(game => helpers.makeExpectedGame(game))
+          .map(game => helpers.makeExpectedGame(testUsers, game))
           .filter(game => game.id !== idToRemove);
         return supertest(app)
           .delete(`/api/games/${idToRemove}`)
@@ -255,7 +292,7 @@ describe("Games Endpoints", function() {
           platforms: "PC, Mobile"
         };
         const expectedGame = {
-          ...testGames.map(game => helpers.makeExpectedGame(game))[
+          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
             idToUpdate - 1
           ],
           ...updateGame
@@ -289,7 +326,7 @@ describe("Games Endpoints", function() {
           title: "updated game title"
         };
         const expectedGame = {
-          ...testGames.map(game => helpers.makeExpectedGame(game))[
+          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
             idToUpdate - 1
           ],
           ...updateGame
