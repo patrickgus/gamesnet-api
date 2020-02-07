@@ -37,7 +37,7 @@ describe("Games Endpoints", function() {
 
       it("responds with 200 and all of the games", () => {
         const expectedGames = testGames.map(game =>
-          helpers.makeExpectedGame(testUsers, game)
+          helpers.makeExpectedGame(game)
         );
         return supertest(app)
           .get("/api/games")
@@ -84,10 +84,7 @@ describe("Games Endpoints", function() {
 
       it("responds with 200 and the specified game", () => {
         const gameId = 2;
-        const expectedGame = helpers.makeExpectedGame(
-          testUsers,
-          testGames[gameId - 1]
-        );
+        const expectedGame = helpers.makeExpectedGame(testGames[gameId - 1]);
 
         return supertest(app)
           .get(`/api/games/${gameId}`)
@@ -220,7 +217,7 @@ describe("Games Endpoints", function() {
       it("responds with 204 and removes the game", () => {
         const idToRemove = 2;
         const expectedGames = testGames
-          .map(game => helpers.makeExpectedGame(testUsers, game))
+          .map(game => helpers.makeExpectedGame(game))
           .filter(game => game.id !== idToRemove);
         return supertest(app)
           .delete(`/api/games/${idToRemove}`)
@@ -258,7 +255,7 @@ describe("Games Endpoints", function() {
           platforms: "PC, Mobile"
         };
         const expectedGame = {
-          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
+          ...testGames.map(game => helpers.makeExpectedGame(game))[
             idToUpdate - 1
           ],
           ...updateGame
@@ -292,7 +289,7 @@ describe("Games Endpoints", function() {
           title: "updated game title"
         };
         const expectedGame = {
-          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
+          ...testGames.map(game => helpers.makeExpectedGame(game))[
             idToUpdate - 1
           ],
           ...updateGame
