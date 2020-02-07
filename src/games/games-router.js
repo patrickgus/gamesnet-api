@@ -14,7 +14,7 @@ const serializeGame = game => ({
   description: xss(game.description),
   rated: xss(game.rated),
   platforms: xss(game.platforms),
-  date_added: game.date_published,
+  date_added: game.date_added,
   poster: game.poster
 });
 
@@ -42,8 +42,7 @@ gamesRouter
       avg_rating,
       description,
       rated,
-      platforms,
-      poster
+      platforms
     };
 
     for (const [key, value] of Object.entries(newGame))
@@ -62,7 +61,7 @@ gamesRouter
       .catch(next);
   });
 
-  gamesRouter
+gamesRouter
   .route("/:game_id")
   .all((req, res, next) => {
     GamesService.getById(req.app.get("db"), req.params.game_id)
@@ -88,14 +87,14 @@ gamesRouter
       .catch(next);
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, cover, description, rated, platforms } = req.body;
-    const gameToUpdate = { title, cover, description, rated, platforms };
+    const { title, description, rated, platforms } = req.body;
+    const gameToUpdate = { title, description, rated, platforms };
 
     const numberOfValues = Object.values(gameToUpdate).filter(Boolean).length;
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain either 'title', 'cover', 'description', 'rated', or 'platforms'`
+          message: `Request body must contain either 'title', 'description', 'rated', or 'platforms'`
         }
       });
 

@@ -17,11 +17,11 @@ describe("Games Endpoints", function() {
   after("disconnect from db", () => db.destroy());
 
   before("clean the table", () =>
-    db.raw("TRUNCATE gamesnet_games RESTART IDENTITY CASCADE")
+    db.raw("TRUNCATE gamesnet_games, gamesnet_users RESTART IDENTITY CASCADE")
   );
 
   afterEach("cleanup", () =>
-    db.raw("TRUNCATE gamesnet_games RESTART IDENTITY CASCADE")
+    db.raw("TRUNCATE gamesnet_games, gamesnet_users RESTART IDENTITY CASCADE")
   );
 
   describe(`GET /api/games`, () => {
@@ -34,10 +34,16 @@ describe("Games Endpoints", function() {
     });
 
     context("Given there are games in the database", () => {
+      const testUsers = makeUsersArray();
       const testGames = makeGamesArray();
 
       beforeEach("insert games", () => {
-        return db.into("gamesnet_games").insert(testGames);
+        return db
+          .into("gamesnet_users")
+          .insert(testUsers)
+          .then(() => {
+            return db.into("gamesnet_games").insert(testGames);
+          });
       });
 
       it("responds with 200 and all of the games", () => {
@@ -162,7 +168,13 @@ describe("Games Endpoints", function() {
         );
     });
 
-    const requiredFields = ["title", "avg_rating", "description", "rated", "platforms"];
+    const requiredFields = [
+      "title",
+      "avg_rating",
+      "description",
+      "rated",
+      "platforms"
+    ];
 
     requiredFields.forEach(field => {
       const newGame = {
@@ -195,6 +207,128 @@ describe("Games Endpoints", function() {
           expect(res.body.title).to.eql(expectedGame.title);
           expect(res.body.description).to.eql(expectedGame.description);
         });
+    });
+  });
+
+  describe(`DELETE /api/games/:game_id`, () => {
+    context(`Given no games`, () => {
+      it(`responds with 404`, () => {
+        const gameId = 123456;
+        return supertest(app)
+          .delete(`/api/games/${gameId}`)
+          .expect(404, { error: { message: `Game doesn't exist` } });
+      });
+    });
+
+    context("Given there are games in the database", () => {
+      const testUsers = makeUsersArray();
+      const testGames = makeGamesArray();
+
+      beforeEach("insert games", () => {
+        return db
+          .into("gamesnet_users")
+          .insert(testUsers)
+          .then(() => {
+            return db.into("gamesnet_games").insert(testGames);
+          });
+      });
+
+      it("responds with 204 and removes the game", () => {
+        const idToRemove = 2;
+        const expectedGames = testGames.filter(game => game.id !== idToRemove);
+        return supertest(app)
+          .delete(`/api/games/${idToRemove}`)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/games`)
+              .expect(expectedGames)
+          );
+      });
+    });
+  });
+
+  describe(`PATCH /api/games/:game_id`, () => {
+    context(`Given no games`, () => {
+      it(`responds with 404`, () => {
+        const gameId = 123456;
+        return supertest(app)
+          .patch(`/api/games/${gameId}`)
+          .expect(404, { error: { message: `Game doesn't exist` } });
+      });
+    });
+
+    context("Given there are games in the database", () => {
+      const testUsers = makeUsersArray();
+      const testGames = makeGamesArray();
+
+      beforeEach("insert games", () => {
+        return db
+          .into("gamesnet_users")
+          .insert(testUsers)
+          .then(() => {
+            return db.into("gamesnet_games").insert(testGames);
+          });
+      });
+
+      it("responds with 204 and updates the game", () => {
+        const idToUpdate = 2;
+        const updateGame = {
+          title: "updated game title",
+          description: "updated game description",
+          rated: "T",
+          platforms: "PC, Mobile"
+        };
+        const expectedGame = {
+          ...testGames[idToUpdate - 1],
+          ...updateGame
+        };
+        return supertest(app)
+          .patch(`/api/games/${idToUpdate}`)
+          .send(updateGame)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/games/${idToUpdate}`)
+              .expect(expectedGame)
+          );
+      });
+
+      it(`responds with 400 when no required fields supplied`, () => {
+        const idToUpdate = 2;
+        return supertest(app)
+          .patch(`/api/games/${idToUpdate}`)
+          .send({ irrelevantField: "foo" })
+          .expect(400, {
+            error: {
+              message: `Request body must contain either 'title', 'description', 'rated', or 'platforms'`
+            }
+          });
+      });
+
+      it(`responds with 204 when updating only a subset of fields`, () => {
+        const idToUpdate = 2;
+        const updateGame = {
+          title: "updated game title"
+        };
+        const expectedGame = {
+          ...testGames[idToUpdate - 1],
+          ...updateGame
+        };
+
+        return supertest(app)
+          .patch(`/api/games/${idToUpdate}`)
+          .send({
+            ...updateGame,
+            fieldToIgnore: "should not be in GET response"
+          })
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/games/${idToUpdate}`)
+              .expect(expectedGame)
+          );
+      });
     });
   });
 });
