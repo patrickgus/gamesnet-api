@@ -1,22 +1,9 @@
 const path = require("path");
 const express = require("express");
-const xss = require("xss");
 const GamesService = require("./games-service");
 
 const gamesRouter = express.Router();
 const jsonParser = express.json();
-
-const serializeGame = game => ({
-  id: game.id,
-  title: xss(game.title),
-  cover: xss(game.cover),
-  avg_rating: game.avg_rating,
-  description: xss(game.description),
-  rated: xss(game.rated),
-  platforms: xss(game.platforms),
-  date_added: game.date_added,
-  poster_id: game.poster_id
-});
 
 gamesRouter
   .route("/")
@@ -24,7 +11,7 @@ gamesRouter
     const knexInstance = req.app.get("db");
     GamesService.getAllGames(knexInstance)
       .then(games => {
-        res.json(games.map(serializeGame));
+        res.json(games.map(GamesService.serializeGame));
       })
       .catch(next);
   })
@@ -56,28 +43,16 @@ gamesRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${game.id}`))
-          .json(serializeGame(game));
+          .json(GamesService.serializeGame(game));
       })
       .catch(next);
   });
 
 gamesRouter
   .route("/:game_id")
-  .all((req, res, next) => {
-    GamesService.getById(req.app.get("db"), req.params.game_id)
-      .then(game => {
-        if (!game) {
-          return res.status(404).json({
-            error: { message: `Game doesn't exist` }
-          });
-        }
-        res.game = game;
-        next();
-      })
-      .catch(next);
-  })
+  .all(checkGameExists)
   .get((req, res, next) => {
-    res.json(serializeGame(res.game));
+    res.json(GamesService.serializeGame(res.game));
   })
   .delete((req, res, next) => {
     GamesService.deleteGame(req.app.get("db"), req.params.game_id)
@@ -104,5 +79,35 @@ gamesRouter
       })
       .catch(next);
   });
+
+gamesRouter
+  .route("/:game_id/reviews/")
+  .all(checkGameExists)
+  .get((req, res, next) => {
+    GamesService.getReviewsForGame(req.app.get("db"), req.params.game_id)
+      .then(reviews => {
+        res.json(reviews.map(GamesService.serializeReview));
+      })
+      .catch(next);
+  });
+
+async function checkGameExists(req, res, next) {
+  try {
+    const game = await GamesService.getById(
+      req.app.get("db"),
+      req.params.game_id
+    );
+
+    if (!game)
+      return res.status(404).json({
+        error: `Game doesn't exist`
+      });
+
+    res.game = game;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
 
 module.exports = gamesRouter;
