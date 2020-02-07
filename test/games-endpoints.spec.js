@@ -1,10 +1,11 @@
 const knex = require("knex");
 const app = require("../src/app");
-const { makeUsersArray } = require("./users.fixtures");
-const { makeGamesArray, makeMaliciousGame } = require("./games.fixtures");
+const helpers = require("./test-helpers");
 
 describe("Games Endpoints", function() {
   let db;
+
+  const { testUsers, testGames } = helpers.makeGamesFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -16,13 +17,9 @@ describe("Games Endpoints", function() {
 
   after("disconnect from db", () => db.destroy());
 
-  before("clean the table", () =>
-    db.raw("TRUNCATE gamesnet_games, gamesnet_users RESTART IDENTITY CASCADE")
-  );
+  before("clean the table", () => helpers.cleanTables(db));
 
-  afterEach("cleanup", () =>
-    db.raw("TRUNCATE gamesnet_games, gamesnet_users RESTART IDENTITY CASCADE")
-  );
+  afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe(`GET /api/games`, () => {
     context(`Given no games`, () => {
@@ -34,36 +31,28 @@ describe("Games Endpoints", function() {
     });
 
     context("Given there are games in the database", () => {
-      const testUsers = makeUsersArray();
-      const testGames = makeGamesArray();
-
-      beforeEach("insert games", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert(testGames);
-          });
-      });
+      beforeEach("insert games", () =>
+        helpers.seedGamesTables(db, testUsers, testGames)
+      );
 
       it("responds with 200 and all of the games", () => {
+        const expectedGames = testGames.map(game =>
+          helpers.makeExpectedGame(testUsers, game)
+        );
         return supertest(app)
           .get("/api/games")
-          .expect(200, testGames);
+          .expect(200, expectedGames);
       });
     });
 
     context(`Given an XSS attack game`, () => {
-      const testUsers = makeUsersArray();
-      const { maliciousGame, expectedGame } = makeMaliciousGame();
+      const testUser = helpers.makeUsersArray()[1];
+      const { maliciousGame, expectedGame } = helpers.makeMaliciousGame(
+        testUser
+      );
 
       beforeEach("insert malicious game", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert([maliciousGame]);
-          });
+        return helpers.seedMaliciousGame(db, testUser, maliciousGame);
       });
 
       it("removes XSS attack content", () => {
@@ -89,21 +78,17 @@ describe("Games Endpoints", function() {
     });
 
     context("Given there are games in the database", () => {
-      const testUsers = makeUsersArray();
-      const testGames = makeGamesArray();
-
-      beforeEach("insert games", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert(testGames);
-          });
-      });
+      beforeEach("insert games", () =>
+        helpers.seedGamesTables(db, testUsers, testGames)
+      );
 
       it("responds with 200 and the specified game", () => {
         const gameId = 2;
-        const expectedGame = testGames[gameId - 1];
+        const expectedGame = helpers.makeExpectedGame(
+          testUsers,
+          testGames[gameId - 1]
+        );
+
         return supertest(app)
           .get(`/api/games/${gameId}`)
           .expect(200, expectedGame);
@@ -111,16 +96,13 @@ describe("Games Endpoints", function() {
     });
 
     context(`Given an XSS attack game`, () => {
-      const testUsers = makeUsersArray();
-      const { maliciousGame, expectedGame } = makeMaliciousGame();
+      const testUser = helpers.makeUsersArray()[1];
+      const { maliciousGame, expectedGame } = helpers.makeMaliciousGame(
+        testUser
+      );
 
       beforeEach("insert malicious game", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert([maliciousGame]);
-          });
+        return helpers.seedMaliciousGame(db, testUser, maliciousGame);
       });
 
       it("removes XSS attack content", () => {
@@ -197,16 +179,26 @@ describe("Games Endpoints", function() {
       });
     });
 
-    it("removes XSS attack content from response", () => {
-      const { maliciousGame, expectedGame } = makeMaliciousGame();
-      return supertest(app)
-        .post(`/api/games`)
-        .send(maliciousGame)
-        .expect(201)
-        .expect(res => {
-          expect(res.body.title).to.eql(expectedGame.title);
-          expect(res.body.description).to.eql(expectedGame.description);
-        });
+    context(`Given an XSS attack game`, () => {
+      const testUser = helpers.makeUsersArray()[1];
+      const { maliciousGame, expectedGame } = helpers.makeMaliciousGame(
+        testUser
+      );
+
+      beforeEach("insert malicious game", () => {
+        return helpers.seedMaliciousGame(db, testUser, maliciousGame);
+      });
+
+      it("removes XSS attack content from response", () => {
+        return supertest(app)
+          .post(`/api/games`)
+          .send(maliciousGame)
+          .expect(201)
+          .expect(res => {
+            expect(res.body.title).to.eql(expectedGame.title);
+            expect(res.body.description).to.eql(expectedGame.description);
+          });
+      });
     });
   });
 
@@ -221,21 +213,15 @@ describe("Games Endpoints", function() {
     });
 
     context("Given there are games in the database", () => {
-      const testUsers = makeUsersArray();
-      const testGames = makeGamesArray();
-
-      beforeEach("insert games", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert(testGames);
-          });
-      });
+      beforeEach("insert games", () =>
+        helpers.seedGamesTables(db, testUsers, testGames)
+      );
 
       it("responds with 204 and removes the game", () => {
         const idToRemove = 2;
-        const expectedGames = testGames.filter(game => game.id !== idToRemove);
+        const expectedGames = testGames
+          .map(game => helpers.makeExpectedGame(testUsers, game))
+          .filter(game => game.id !== idToRemove);
         return supertest(app)
           .delete(`/api/games/${idToRemove}`)
           .expect(204)
@@ -259,17 +245,9 @@ describe("Games Endpoints", function() {
     });
 
     context("Given there are games in the database", () => {
-      const testUsers = makeUsersArray();
-      const testGames = makeGamesArray();
-
-      beforeEach("insert games", () => {
-        return db
-          .into("gamesnet_users")
-          .insert(testUsers)
-          .then(() => {
-            return db.into("gamesnet_games").insert(testGames);
-          });
-      });
+      beforeEach("insert games", () =>
+        helpers.seedGamesTables(db, testUsers, testGames)
+      );
 
       it("responds with 204 and updates the game", () => {
         const idToUpdate = 2;
@@ -280,7 +258,9 @@ describe("Games Endpoints", function() {
           platforms: "PC, Mobile"
         };
         const expectedGame = {
-          ...testGames[idToUpdate - 1],
+          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
+            idToUpdate - 1
+          ],
           ...updateGame
         };
         return supertest(app)
@@ -312,7 +292,9 @@ describe("Games Endpoints", function() {
           title: "updated game title"
         };
         const expectedGame = {
-          ...testGames[idToUpdate - 1],
+          ...testGames.map(game => helpers.makeExpectedGame(testUsers, game))[
+            idToUpdate - 1
+          ],
           ...updateGame
         };
 
