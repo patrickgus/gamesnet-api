@@ -1,20 +1,28 @@
 const bcrypt = require("bcryptjs");
+// const jwt = require("jsonwebtoken");
 
 function makeUsersArray() {
   return [
     {
       id: 1,
       date_joined: new Date("2029-01-22T16:28:32.615Z"),
-      fullname: "Sam Gamgee",
-      username: "sam.gamgee",
+      fullname: "Test User 1",
+      username: "test-user-1",
       password: "secret"
     },
     {
       id: 2,
       date_joined: new Date("2100-05-22T16:28:32.615Z"),
-      fullname: "Peregrin Took",
-      username: "peregrin.took",
+      fullname: "Test user 2",
+      username: "test-user-2",
       password: "secret"
+    },
+    {
+      id: 3,
+      date_joined: new Date("2029-01-22T16:28:32.615Z"),
+      fullname: "Test user 3",
+      username: "test-user-3",
+      password: "password"
     }
   ];
 }
@@ -52,7 +60,7 @@ function makeGamesArray(users) {
       rated: "M",
       platforms: "Xbox, Windows",
       date_added: new Date("2029-01-22T16:28:32.615Z"),
-      poster_id: users[0].id
+      poster_id: users[2].id
     },
     {
       id: 4,
@@ -79,7 +87,48 @@ function makeGamesArray(users) {
   ];
 }
 
-function makeExpectedGame(users, game) {
+function makeReviewsArray(users, games) {
+  return [
+    {
+      id: 1,
+      title: "First test review!",
+      rating: 9,
+      review: "This is the first test review",
+      game_id: games[0].id,
+      user_id: users[0].id,
+      date_posted: new Date("2029-01-22T16:28:32.615Z")
+    },
+    {
+      id: 2,
+      title: "Second test review!",
+      rating: 8,
+      review: "This is the second test review",
+      game_id: games[1].id,
+      user_id: users[1].id,
+      date_posted: new Date("2029-01-22T16:28:32.615Z")
+    },
+    {
+      id: 3,
+      title: "Third test review!",
+      rating: 7,
+      review: "This is the third test review",
+      game_id: games[0].id,
+      user_id: users[2].id,
+      date_posted: new Date("2029-01-22T16:28:32.615Z")
+    },
+    {
+      id: 4,
+      title: "Fourth test review!",
+      rating: 6,
+      review: "This is the fourth test review",
+      game_id: games[2].id,
+      user_id: users[0].id,
+      date_posted: new Date("2029-01-22T16:28:32.615Z")
+    }
+  ];
+}
+
+function makeExpectedGame(game) {
   return {
     id: game.id,
     title: game.title,
@@ -91,6 +140,27 @@ function makeExpectedGame(users, game) {
     date_added: game.date_added.toISOString(),
     poster_id: game.poster_id
   };
+}
+
+function makeExpectedGameReviews(users, gameId, reviews) {
+  const expectedReviews = reviews.filter(review => review.game_id === gameId);
+
+  return expectedReviews.map(review => {
+    const reviewUser = users.find(user => user.id === review.user_id);
+    return {
+      id: review.id,
+      title: review.title,
+      rating: review.rating,
+      review: review.review,
+      date_posted: review.date_posted.toISOString(),
+      user: {
+        id: reviewUser.id,
+        username: reviewUser.username,
+        fullname: reviewUser.fullname,
+        date_joined: reviewUser.date_joined.toISOString()
+      }
+    };
+  });
 }
 
 function makeMaliciousGame(user) {
@@ -119,7 +189,8 @@ function makeMaliciousGame(user) {
 function makeGamesFixtures() {
   const testUsers = makeUsersArray();
   const testGames = makeGamesArray(testUsers);
-  return { testUsers, testGames };
+  const testReviews = makeReviewsArray(testUsers, testGames);
+  return { testUsers, testGames, testReviews };
 }
 
 function cleanTables(db) {
@@ -128,7 +199,8 @@ function cleanTables(db) {
       .raw(
         `TRUNCATE
         gamesnet_games,
-        gamesnet_users
+        gamesnet_users,
+        gamesnet_reviews
       `
       )
       .then(() =>
@@ -139,8 +211,12 @@ function cleanTables(db) {
           trx.raw(
             `ALTER SEQUENCE gamesnet_users_id_seq minvalue 0 START WITH 1`
           ),
+          trx.raw(
+            `ALTER SEQUENCE gamesnet_reviews_id_seq minvalue 0 START WITH 1`
+          ),
           trx.raw(`SELECT setval('gamesnet_games_id_seq', 0)`),
-          trx.raw(`SELECT setval('gamesnet_users_id_seq', 0)`)
+          trx.raw(`SELECT setval('gamesnet_users_id_seq', 0)`),
+          trx.raw(`SELECT setval('gamesnet_reviews_id_seq', 0)`)
         ])
       )
   );
@@ -171,6 +247,13 @@ function seedGamesTables(db, users, games) {
     await trx.raw(`SELECT setval('gamesnet_games_id_seq', ?)`, [
       games[games.length - 1].id
     ]);
+    // only insert reviews if there are some, also update the sequence counter
+    if (reviews.length) {
+      await trx.into("gamesnet_reviews").insert(reviews);
+      await trx.raw(`SELECT setval('gamesnet_reviews_id_seq', ?)`, [
+        reviews[reviews.length - 1].id
+      ]);
+    }
   });
 }
 
@@ -192,9 +275,10 @@ module.exports = {
   makeUsersArray,
   makeGamesArray,
   makeExpectedGame,
+  makeExpectedGameReviews,
   makeMaliciousGame,
+  makeReviewsArray,
   makeGamesFixtures,
-  cleanTables,
   cleanTables,
   seedUsers,
   seedGamesTables,
