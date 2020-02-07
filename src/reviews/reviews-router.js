@@ -1,20 +1,9 @@
 const path = require("path");
 const express = require("express");
-const xss = require("xss");
 const ReviewsService = require("./reviews-service");
 
 const reviewsRouter = express.Router();
 const jsonParser = express.json();
-
-const serializeReview = review => ({
-  id: review.id,
-  title: xss(review.title),
-  rating: review.rating,
-  review: xss(review.review),
-  date_posted: review.date_posted,
-  game_id: review.game_id,
-  user_id: review.user_id
-});
 
 reviewsRouter
   .route("/")

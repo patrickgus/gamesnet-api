@@ -1,3 +1,5 @@
+const xss = require("xss");
+
 const ReviewsService = {
   getAllReviews(knex) {
     return knex.select("*").from("gamesnet_reviews");
@@ -17,6 +19,17 @@ const ReviewsService = {
       .select("*")
       .where("id", id)
       .first();
+  },
+  serializeReview(review) {
+    return {
+      id: review.id,
+      title: xss(review.title),
+      rating: review.rating,
+      review: xss(review.review),
+      date_posted: review.date_posted,
+      game_id: review.game_id,
+      user_id: review.user_id
+    }
   }
 };
 

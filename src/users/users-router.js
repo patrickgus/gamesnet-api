@@ -1,17 +1,9 @@
 const path = require("path");
 const express = require("express");
-const xss = require("xss");
 const UsersService = require("./users-service");
 
 const usersRouter = express.Router();
 const jsonParser = express.json();
-
-const serializeUser = user => ({
-  id: user.id,
-  fullname: xss(user.fullname),
-  username: xss(user.username),
-  date_joined: user.date_joined
-});
 
 usersRouter
   .route("/")
