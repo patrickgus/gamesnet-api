@@ -11,7 +11,7 @@ function makeGamesArray() {
       rated: "M",
       platforms: "Playstaion",
       date_added: "2029-01-22T16:28:32.615Z",
-      poster: 2
+      poster_id: 2
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ function makeGamesArray() {
       rated: "T",
       platforms: "Playstation, Xbox, PC, Mobile",
       date_added: "2029-01-22T16:28:32.615Z",
-      poster: 1
+      poster_id: 1
     },
     {
       id: 3,
@@ -37,7 +37,7 @@ function makeGamesArray() {
       rated: "M",
       platforms: "Xbox, Windows",
       date_added: "2029-01-22T16:28:32.615Z",
-      poster: 2
+      poster_id: 2
     },
     {
       id: 4,
@@ -50,7 +50,7 @@ function makeGamesArray() {
       rated: "E",
       platforms: "Playstation, Xbox, PC",
       date_added: "1919-12-22T16:28:32.615Z",
-      poster: 2
+      poster_id: 2
     },
     {
       id: 5,
@@ -63,7 +63,7 @@ function makeGamesArray() {
       rated: "T",
       platforms: "Playstation, Xbox, PC, Switch, Stadia",
       date_added: "1919-12-22T16:28:32.615Z",
-      poster: 1
+      poster_id: 1
     }
   ];
 }

@@ -15,7 +15,7 @@ const serializeGame = game => ({
   rated: xss(game.rated),
   platforms: xss(game.platforms),
   date_added: game.date_added,
-  poster: game.poster
+  poster_id: game.poster_id
 });
 
 gamesRouter
@@ -35,7 +35,7 @@ gamesRouter
       description,
       rated,
       platforms,
-      poster
+      poster_id
     } = req.body;
     const newGame = {
       title,
@@ -50,7 +50,7 @@ gamesRouter
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         });
-    newGame.poster = poster;
+    newGame.poster_id = poster_id;
     GamesService.insertGame(req.app.get("db"), newGame)
       .then(game => {
         res
