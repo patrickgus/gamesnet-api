@@ -63,7 +63,6 @@ const GamesService = {
     return {
       id: game.id,
       title: xss(game.title),
-      cover: xss(game.cover),
       avg_rating: game.avg_rating,
       description: xss(game.description),
       rated: xss(game.rated),
