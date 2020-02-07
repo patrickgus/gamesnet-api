@@ -90,8 +90,6 @@ function makeGamesArray(users) {
 }
 
 function makeExpectedGame(users, game) {
-  const poster = users.find(user => user.id === game.poster_id);
-
   return {
     id: game.id,
     title: game.title,
