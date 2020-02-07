@@ -2,7 +2,7 @@ const knex = require("knex");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
-describe.only("Games Endpoints", function() {
+describe("Games Endpoints", function() {
   let db;
 
   const { testUsers, testGames, testReviews } = helpers.makeGamesFixtures();
