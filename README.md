@@ -24,3 +24,7 @@ Run the tests `npm test`
 ## Deploying
 
 When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+
+## Seeding tables
+
+To seed tables use SQL command  `\i 'C:/Users/patri/Projects/gamesnet-api/seeds/seed.gamesnet_tables.sql'` in gamesnet database.
