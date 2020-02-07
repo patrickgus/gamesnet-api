@@ -11,7 +11,7 @@ usersRouter
     const knexInstance = req.app.get("db");
     UsersService.getAllUsers(knexInstance)
       .then(users => {
-        res.json(users.map(serializeUser));
+        res.json(users.map(UsersService.serializeUser));
       })
       .catch(next);
   })
@@ -48,7 +48,7 @@ usersRouter
               res
                 .status(201)
                 .location(path.posix.join(req.originalUrl, `/${user.id}`))
-                .json(serializeUser(user));
+                .json(UsersService.serializeUser(user));
             }
           );
         });
@@ -72,7 +72,7 @@ usersRouter
       .catch(next);
   })
   .get((req, res, next) => {
-    res.json(serializeUser(res.user));
+    res.json(UsersService.serializeUser(res.user));
   })
   .delete((req, res, next) => {
     UsersService.deleteUser(req.app.get("db"), req.params.user_id)
