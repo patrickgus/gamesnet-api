@@ -11,7 +11,7 @@ reviewsRouter
     const knexInstance = req.app.get("db");
     ReviewsService.getAllReviews(knexInstance)
       .then(reviews => {
-        res.json(reviews.map(serializeReview));
+        res.json(reviews.map(ReviewsService.serializeReview));
       })
       .catch(next);
   })
@@ -32,7 +32,7 @@ reviewsRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${review.id}`))
-          .json(serializeReview(review));
+          .json(ReviewsService.serializeReview(review));
       })
       .catch(next);
   });
