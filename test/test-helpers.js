@@ -128,11 +128,12 @@ function makeReviewsArray(users, games) {
   ];
 }
 
-function makeExpectedGame(game) {
+function makeExpectedGame(users, game) {
+  const poster = users.find(user => user.id === game.poster_id);
+
   return {
     id: game.id,
     title: game.title,
-    cover: game.cover,
     avg_rating: game.avg_rating,
     description: game.description,
     rated: game.rated,
@@ -238,7 +239,7 @@ function seedUsers(db, users) {
     );
 }
 
-function seedGamesTables(db, users, games) {
+function seedGamesTables(db, users, games, reviews = []) {
   // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await seedUsers(trx, users);
