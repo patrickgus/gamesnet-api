@@ -12,21 +12,21 @@ VALUES
   ('John Smith', 'smitty', '$2a$12$68B48OpNd/Mow.7NYBz8QOgZANMXEHU95yd9hAdTqxGFIK9Y4wVPi'),
   ('Geoff George', 'GG3', '$2a$12$U71BqKYwRHbcGr/rQjkYDOjunaEVhtJVEJZkXiF4o1yfJVXvOl6A6');
   
-INSERT INTO gamesnet_games(title, avg_rating, description, rated, platforms, poster_id)
+INSERT INTO gamesnet_games(title, description, rated, platforms, user_id)
 VALUES
-  ('God of War(2018)', 9.7, 
+  ('God of War(2018)', 
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion', 1),
-  ('PUBG', 6.8, 
+  ('PUBG', 
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'T', 'Playstaion, Xbox, PC, Mobile', 3),
-  ('Halo 2', 8, 
+  ('Halo 2', 
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Xbox, Windows', 1),
-  ('The Outer Worlds', 7.5, 
+  ('The Outer Worlds',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion, Xbox, PC', 2),
-  ('Assassins Creed: Oddyssey', 9, 
+  ('Assassins Creed: Oddyssey',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion, Xbox, PC, Switch, Stadia', 3);
 
