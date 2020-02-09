@@ -8,13 +8,11 @@ const jsonParser = express.json();
 
 gamesRouter
   .route("/")
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     GamesService.getAllGames(req.app.get("db"))
       .then(games => {
-        // console.log(games);
         res.json(GamesService.serializeGames(games));
-        console.log(games);
       })
       .catch(next);
   })
