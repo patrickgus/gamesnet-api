@@ -110,7 +110,7 @@ describe("Users Endpoints", function() {
           .post("/api/users")
           .send(userPasswordNotComplex)
           .expect(400, {
-            error: `Password must contain one upper case, lower case, number and special character`
+            error: `Password must contain one upper case, lower case, number and special character(!,@,#,$,%,^,&)`
           });
       });
 
