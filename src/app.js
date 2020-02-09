@@ -5,8 +5,9 @@ const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV, CLIENT_ORIGIN } = require("./config");
 const gamesRouter = require("./games/games-router");
-const usersRouter = require("./users/users-router");
 const reviewsRouter = require("./reviews/reviews-router");
+const authRouter = require("./auth/auth-router");
+const usersRouter = require("./users/users-router");
 const errorHandler = require("./error-handler");
 
 const app = express();
@@ -22,8 +23,9 @@ app.use(helmet());
 app.use(cors({ origin: CLIENT_ORIGIN }));
 
 app.use("/api/games", gamesRouter);
-app.use("/api/users", usersRouter);
 app.use("/api/reviews", reviewsRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 
 app.use(errorHandler);
 
