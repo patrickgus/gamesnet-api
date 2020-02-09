@@ -8,6 +8,7 @@ const GamesService = {
       .select(
         "gam.id",
         "gam.title",
+        "gam.cover",
         "gam.description",
         "gam.rated",
         "gam.platforms",
@@ -68,6 +69,7 @@ const GamesService = {
     return {
       id: gameData.id,
       title: xss(gameData.title),
+      cover: xss(gameData.cover),
       description: xss(gameData.description),
       rated: xss(gameData.rated),
       platforms: xss(gameData.platforms),
