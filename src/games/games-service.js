@@ -1,24 +1,28 @@
 const xss = require("xss");
+const Treeize = require("treeize");
 
 const GamesService = {
-  updateAvg(db, game_id) {
+  getAllGames(db) {
     return db
-      .from("gamesnet_games")
-      .where("game_id", game_id)
-      .update({
-        avg_rating: db.raw(
-          "SELECT ROUND(AVG(rating), 1) AS avg_rating FROM gamesnet_reviews GROUP BY game_id"
-        )
-      })
-      .then(() => db.from("gamesnet_games").where("game_id", game_id));
+      .from("gamesnet_games AS gam")
+      .select(
+        "gam.id",
+        "gam.title",
+        "gam.description",
+        "gam.rated",
+        "gam.platforms",
+        "gam.date_added",
+        ...userFields,
+        db.raw(`count(DISTINCT rev) AS number_of_reviews`),
+        db.raw(`ROUND(AVG(rev.rating), 1) AS avg_rating`)
+      )
+      .leftJoin("gamesnet_reviews AS rev", "gam.id", "rev.game_id")
+      .leftJoin("gamesnet_users AS usr", "gam.user_id", "usr.id")
+      .groupBy("gam.id", "usr.id");
   },
 
-  getAllGames(knex) {
-    return knex.select("*").from("gamesnet_games");
-  },
-
-  insertGame(knex, newGame) {
-    return knex
+  insertGame(db, newGame) {
+    return db
       .insert(newGame)
       .into("gamesnet_games")
       .returning("*")
@@ -27,24 +31,10 @@ const GamesService = {
       });
   },
 
-  getById(knex, id) {
-    return knex
-      .from("gamesnet_games")
-      .select("*")
-      .where("id", id)
+  getById(db, id) {
+    return GamesService.getAllGames(db)
+      .where("gam.id", id)
       .first();
-  },
-
-  deleteGame(knex, id) {
-    return knex("gamesnet_games")
-      .where({ id })
-      .delete();
-  },
-
-  updateGame(knex, id, newGameFields) {
-    return knex("gamesnet_games")
-      .where({ id })
-      .update(newGameFields);
   },
 
   getReviewsForGame(db, game_id) {
@@ -56,55 +46,64 @@ const GamesService = {
         "rev.rating",
         "rev.review",
         "rev.date_posted",
-        db.raw(
-          `json_strip_nulls(
-            row_to_json(
-              (SELECT tmp FROM (
-                SELECT
-                  usr.id,
-                  usr.username,
-                  usr.fullname,
-                  usr.date_joined
-              ) tmp)
-            )
-          ) AS "user"`
-        )
+        ...userFields
       )
       .where("rev.game_id", game_id)
       .leftJoin("gamesnet_users AS usr", "rev.user_id", "usr.id")
       .groupBy("rev.id", "usr.id");
   },
 
+  serializeGames(games) {
+    return games.map(this.serializeGame);
+  },
+
   serializeGame(game) {
+    const gameTree = new Treeize();
+
+    // Some light hackiness to allow for the fact that `treeize`
+    // only accepts arrays of objects, and we want to use a single
+    // object.
+    const gameData = gameTree.grow([game]).getData()[0];
+
     return {
-      id: game.id,
-      title: xss(game.title),
-      avg_rating: game.avg_rating,
-      description: xss(game.description),
-      rated: xss(game.rated),
-      platforms: xss(game.platforms),
-      date_added: new Date(game.date_added),
-      poster_id: game.poster_id
+      id: gameData.id,
+      title: xss(gameData.title),
+      description: xss(gameData.description),
+      rated: xss(gameData.rated),
+      platforms: xss(gameData.platforms),
+      date_added: gameData.date_added,
+      user: gameData.user || {},
+      number_of_reviews: Number(gameData.number_of_reviews) || 0,
+      avg_rating: Math.round(gameData.avg_rating) || 0
     };
   },
 
+  serializeReviews(reviews) {
+    return reviews.map(this.serializeReview);
+  },
+
   serializeReview(review) {
-    const { user } = review;
+    const reviewTree = new Treeize();
+
+    const reviewData = reviewTree.grow([review]).getData()[0];
+
     return {
-      id: review.id,
-      game_id: review.game_id,
-      title: xss(review.title),
-      rating: review.rating,
-      review: xss(review.review),
-      date_posted: new Date(review.date_posted),
-      user: {
-        id: user.id,
-        fullname: user.fullname,
-        username: user.username,
-        date_joined: new Date(user.date_joined)
-      }
+      id: reviewData.id,
+      game_id: reviewData.game_id,
+      title: xss(reviewData.title),
+      rating: reviewData.rating,
+      review: xss(reviewData.review),
+      date_posted: reviewData.date_posted,
+      user: reviewData.user || {}
     };
   }
 };
+
+const userFields = [
+  "usr.id AS user:id",
+  "usr.username AS user:username",
+  "usr.fullname AS user:fullname",
+  "usr.date_joined AS user:date_joined"
+];
 
 module.exports = GamesService;
