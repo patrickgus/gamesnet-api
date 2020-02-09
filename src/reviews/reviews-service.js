@@ -1,28 +1,42 @@
 const xss = require("xss");
 
 const ReviewsService = {
-  getAllReviews(knex) {
-    return knex.select("*").from("gamesnet_reviews");
+  getById(db, id) {
+    return db
+      .from("gamesnet_reviews AS rev")
+      .select(
+        "rev.id",
+        "rev.title",
+        "rev.rating",
+        "rev.review",
+        "rev.date_posted",
+        "rev.game_id",
+        db.raw(
+          `row_to_json(
+            (SELECT tmp FROM (
+              SELECT
+                usr.id,
+                usr.username,
+                usr.fullname,
+                usr.date_joined
+            ) tmp)
+          ) AS "user"`
+        )
+      )
+      .leftJoin("gamesnet_users AS usr", "rev.user_id", "usr.id")
+      .where("rev.id", id)
+      .first();
   },
 
-  insertReview(knex, newReview) {
-    return knex
+  insertReview(db, newReview) {
+    return db
       .insert(newReview)
       .into("gamesnet_reviews")
       .returning("*")
-      .then(rows => {
-        return rows[0];
-      });
+      .then(([review]) => review)
+      .then(review => ReviewsService.getById(db, review.id));
   },
 
-  getById(knex, id) {
-    return knex
-      .from("gamesnet_reviews")
-      .select("*")
-      .where("id", id)
-      .first();
-  },
-  
   serializeReview(review) {
     return {
       id: review.id,
@@ -31,7 +45,7 @@ const ReviewsService = {
       review: xss(review.review),
       date_posted: review.date_posted,
       game_id: review.game_id,
-      user_id: review.user_id
+      user: review.user || {}
     };
   }
 };
