@@ -281,6 +281,7 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     subject: user.username,
     algorithm: "HS256"
   });
+  console.log(token);
   return `Bearer ${token}`;
 }
 
