@@ -8,16 +8,7 @@ const jsonParser = express.json();
 
 reviewsRouter
   .route("/")
-  .all(requireAuth)
-  .get((req, res, next) => {
-    const knexInstance = req.app.get("db");
-    ReviewsService.getAllReviews(knexInstance)
-      .then(reviews => {
-        res.json(reviews.map(ReviewsService.serializeReview));
-      })
-      .catch(next);
-  })
-  .post(jsonParser, (req, res, next) => {
+  .post(requireAuth, jsonParser, (req, res, next) => {
     const { title, rating, review, game_id } = req.body;
     const newReview = { title, rating, review, game_id };
 
