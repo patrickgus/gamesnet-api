@@ -186,7 +186,6 @@ describe("Games Endpoints", function() {
 
     const requiredFields = [
       "title",
-      "avg_rating",
       "description",
       "rated",
       "platforms"
