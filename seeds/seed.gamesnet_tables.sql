@@ -12,21 +12,21 @@ VALUES
   ('John Smith', 'smitty', '$2a$12$68B48OpNd/Mow.7NYBz8QOgZANMXEHU95yd9hAdTqxGFIK9Y4wVPi'),
   ('Geoff George', 'GG3', '$2a$12$U71BqKYwRHbcGr/rQjkYDOjunaEVhtJVEJZkXiF4o1yfJVXvOl6A6');
   
-INSERT INTO gamesnet_games(title, description, rated, platforms, user_id)
+INSERT INTO gamesnet_games(title, cover, description, rated, platforms, user_id)
 VALUES
-  ('God of War(2018)', 
+  ('God of War(2018)', 'https://images-na.ssl-images-amazon.com/images/I/5122wZuQ%2BhL.jpg',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion', 1),
-  ('PUBG', 
+  ('PUBG', 'https://i.pinimg.com/474x/cc/f5/16/ccf516ec57b13c340d90f2473dd23e08.jpg',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'T', 'Playstaion, Xbox, PC, Mobile', 3),
-  ('Halo 2', 
+  ('Halo 2', 'https://upload.wikimedia.org/wikipedia/en/thumb/9/92/Halo2-cover.png/220px-Halo2-cover.png',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Xbox, Windows', 1),
-  ('The Outer Worlds',
+  ('The Outer Worlds', 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e7/The_Outer_Worlds_cover_art.png/220px-The_Outer_Worlds_cover_art.png',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion, Xbox, PC', 2),
-  ('Assassins Creed: Oddyssey',
+  ('Assassins Creed: Oddyssey', 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/30dd9067302871.5b34f741efc0b.jpg',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.',
     'M', 'Playstaion, Xbox, PC, Switch, Stadia', 3);
 
