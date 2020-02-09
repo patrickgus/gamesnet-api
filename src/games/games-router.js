@@ -37,7 +37,7 @@ gamesRouter
           error: { message: `Missing '${key}' in request body` }
         });
 
-    newGame.poster_id = req.user.id;
+    newGame.user_id = req.user.id;
 
     GamesService.insertGame(req.app.get("db"), newGame)
       .then(game => {

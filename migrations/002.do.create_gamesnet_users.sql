@@ -8,6 +8,6 @@ CREATE TABLE gamesnet_users (
 
 ALTER TABLE gamesnet_games
   ADD COLUMN
-    poster_id INTEGER REFERENCES gamesnet_users(id)
+    user_id INTEGER REFERENCES gamesnet_users(id)
     ON DELETE SET NULL;
     

@@ -1,4 +1,4 @@
 ALTER TABLE gamesnet_games
-  DROP COLUMN poster_id;
+  DROP COLUMN user_id;
 
 DROP TABLE IF EXISTS gamesnet_users;
