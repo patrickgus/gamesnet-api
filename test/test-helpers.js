@@ -32,6 +32,7 @@ function makeGamesArray(users) {
     {
       id: 1,
       title: "First test game",
+      cover: "",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet, odio vitae imperdiet finibus, purus nisi tincidunt lorem, feugiat bibendum mi mi sit amet urna. Donec a elementum nunc, sed dapibus augue. Duis volutpat at nisl eget varius. Nam vitae libero auctor, lacinia quam ac, fermentum dolor. Donec arcu neque, faucibus eu porta nec, laoreet sit amet eros.",
       rated: "M",
@@ -42,6 +43,7 @@ function makeGamesArray(users) {
     {
       id: 2,
       title: "Second test game",
+      cover: "",
       description:
         "Sed pharetra, ante vel aliquet viverra, augue nunc malesuada dui, vel sollicitudin enim sem at urna. Integer pharetra sodales dolor, id accumsan purus aliquam sed. Donec at magna convallis, varius turpis in, elementum eros. Aliquam erat volutpat. Ut at leo eu ligula fermentum fringilla malesuada ut nisl.",
       rated: "T",
@@ -52,6 +54,7 @@ function makeGamesArray(users) {
     {
       id: 3,
       title: "Third test game",
+      cover: "",
       description:
         "Mauris erat justo, facilisis eget lacus convallis, feugiat luctus massa. Nullam molestie ullamcorper nisl sed posuere. Aliquam erat volutpat. Morbi sed suscipit neque, eu fermentum dolor. Vivamus luctus, eros eu finibus auctor, arcu erat pretium sem, ut tempor mi quam vitae dolor. Mauris feugiat mi in imperdiet commodo.",
       rated: "M",
@@ -62,6 +65,7 @@ function makeGamesArray(users) {
     {
       id: 4,
       title: "Fourth test game",
+      cover: "",
       description:
         "In ut scelerisque leo, non ultricies velit. Nam ullamcorper tortor lorem, eu tincidunt turpis cursus porta. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer condimentum tempus ligula eget pretium. Duis id diam eu est egestas efficitur non consectetur ex.",
       rated: "E",
@@ -72,6 +76,7 @@ function makeGamesArray(users) {
     {
       id: 5,
       title: "Fifth test game",
+      cover: "",
       description:
         "Suspendisse viverra sodales metus tincidunt interdum. Phasellus nec tellus euismod, mollis turpis vel, scelerisque odio. Integer ante purus, lobortis a tincidunt sit amet, semper lobortis magna. Maecenas malesuada volutpat luctus. Praesent convallis metus id leo ornare porttitor non quis dui. Nunc in risus dignissim, iaculis lacus sed, cursus diam.",
       rated: "T",
@@ -131,9 +136,14 @@ function makeExpectedGame(users, game, reviews = []) {
   const number_of_reviews = gameReviews.length;
   const avg_rating = calculateAverageRating(gameReviews);
 
+  console.log("gameReviews", gameReviews);
+  console.log("number_of_reviews", number_of_reviews);
+  console.log("avg_rating", avg_rating);
+
   return {
     id: game.id,
     title: game.title,
+    cover: game.cover,
     description: game.description,
     rated: game.rated,
     platforms: game.platforms,
@@ -182,6 +192,7 @@ function makeMaliciousGame(user) {
   const maliciousGame = {
     id: 911,
     title: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    cover: "",
     description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
     rated: "U",
     platforms: "Xbox",
@@ -281,7 +292,6 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     subject: user.username,
     algorithm: "HS256"
   });
-  console.log(token);
   return `Bearer ${token}`;
 }
 

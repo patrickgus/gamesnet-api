@@ -21,11 +21,11 @@ describe.only("Games Endpoints", function() {
 
   afterEach("cleanup", () => helpers.cleanTables(db));
 
-  describe.only(`GET /api/games`, () => {
+  describe(`GET /api/games`, () => {
     context(`Given no games`, () => {
-      it.only(`responds with 200 and an empty list`, () => {
-        // console.log(testUsers[0]);
-        console.log(helpers.makeAuthHeader(testUsers[0]));
+      beforeEach(() => helpers.seedUsers(db, testUsers));
+      
+      it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get("/api/games")
           .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
@@ -38,7 +38,7 @@ describe.only("Games Endpoints", function() {
         helpers.seedGamesTables(db, testUsers, testGames, testReviews)
       );
 
-      it("responds with 200 and all of the games", () => {
+      it.only("responds with 200 and all of the games", () => {
         const expectedGames = testGames.map(game =>
           helpers.makeExpectedGame(testUsers, game)
         );
@@ -62,7 +62,6 @@ describe.only("Games Endpoints", function() {
       it("removes XSS attack content", () => {
         return supertest(app)
           .get(`/api/games`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .expect(200)
           .expect(res => {
             expect(res.body[0].title).to.eql(expectedGame.title);
@@ -74,6 +73,8 @@ describe.only("Games Endpoints", function() {
 
   describe(`GET /api/games/:game_id`, () => {
     context(`Given no games`, () => {
+      beforeEach(() => helpers.seedUsers(db, testUsers));
+
       it(`responds with 404`, () => {
         const gameId = 123456;
         return supertest(app)
@@ -115,7 +116,6 @@ describe.only("Games Endpoints", function() {
       it("removes XSS attack content", () => {
         return supertest(app)
           .get(`/api/games/${maliciousGame.id}`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .expect(200)
           .expect(res => {
             expect(res.body.title).to.eql(expectedGame.title);
@@ -160,11 +160,12 @@ describe.only("Games Endpoints", function() {
   });
 
   describe(`POST /api/games`, () => {
-    it(`creates an game, responding with 201 and the new game`, function() {
+    beforeEach(() => helpers.seedUsers(db, testUsers));
+
+    it(`creates a game, responding with 201 and the new game`, function() {
       this.retries(3);
       const newGame = {
         title: "Test game",
-        avg_rating: 10,
         description: "A game of tests",
         rated: "E",
         platforms: "PC"
@@ -176,7 +177,6 @@ describe.only("Games Endpoints", function() {
         .expect(201)
         .expect(res => {
           expect(res.body.title).to.eql(newGame.title);
-          expect(res.body.avg_rating).to.eql(newGame.avg_rating);
           expect(res.body.description).to.eql(newGame.description);
           expect(res.body.rated).to.eql(newGame.rated);
           expect(res.body.platforms).to.eql(newGame.platforms);
@@ -229,7 +229,6 @@ describe.only("Games Endpoints", function() {
       it("removes XSS attack content from response", () => {
         return supertest(app)
           .post(`/api/games`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send(maliciousGame)
           .expect(201)
           .expect(res => {
