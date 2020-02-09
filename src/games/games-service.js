@@ -1,9 +1,22 @@
 const xss = require("xss");
 
 const GamesService = {
+  updateAvg(db, game_id) {
+    return db
+      .from("gamesnet_games")
+      .where("game_id", game_id)
+      .update({
+        avg_rating: db.raw(
+          "SELECT ROUND(AVG(rating), 1) AS avg_rating FROM gamesnet_reviews GROUP BY game_id"
+        )
+      })
+      .then(() => db.from("gamesnet_games").where("game_id", game_id));
+  },
+
   getAllGames(knex) {
     return knex.select("*").from("gamesnet_games");
   },
+
   insertGame(knex, newGame) {
     return knex
       .insert(newGame)
@@ -13,6 +26,7 @@ const GamesService = {
         return rows[0];
       });
   },
+
   getById(knex, id) {
     return knex
       .from("gamesnet_games")
@@ -20,11 +34,13 @@ const GamesService = {
       .where("id", id)
       .first();
   },
+
   deleteGame(knex, id) {
     return knex("gamesnet_games")
       .where({ id })
       .delete();
   },
+
   updateGame(knex, id, newGameFields) {
     return knex("gamesnet_games")
       .where({ id })
