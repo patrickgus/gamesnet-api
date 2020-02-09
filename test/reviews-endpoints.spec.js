@@ -34,11 +34,11 @@ describe("Reviews Endpoints", function() {
         title: "Test new review",
         rating: 8,
         review: "New review for test",
-        game_id: testGame.id,
-        user_id: testUser.id
+        game_id: testGame.id
       };
       return supertest(app)
         .post("/api/reviews")
+        .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
         .send(newReview)
         .expect(201)
         .expect(res => {
@@ -47,7 +47,7 @@ describe("Reviews Endpoints", function() {
           expect(res.body.rating).to.eql(newReview.rating);
           expect(res.body.review).to.eql(newReview.review);
           expect(res.body.game_id).to.eql(newReview.game_id);
-          expect(res.body.user_id).to.eql(newReview.user_id);
+          expect(res.body.user.id).to.eql(testUser.id);
           expect(res.headers.location).to.eql(`/api/reviews/${res.body.id}`);
           const expectedDate = new Date().toLocaleString("en", {
             timeZone: "UTC"
@@ -93,6 +93,7 @@ describe("Reviews Endpoints", function() {
 
         return supertest(app)
           .post("/api/reviews")
+          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send(newReview)
           .expect(400, {
             error: { message: `Missing '${field}' in request body` }
