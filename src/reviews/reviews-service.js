@@ -4,6 +4,7 @@ const ReviewsService = {
   getAllReviews(knex) {
     return knex.select("*").from("gamesnet_reviews");
   },
+
   insertReview(knex, newReview) {
     return knex
       .insert(newReview)
@@ -13,6 +14,7 @@ const ReviewsService = {
         return rows[0];
       });
   },
+
   getById(knex, id) {
     return knex
       .from("gamesnet_reviews")
@@ -20,6 +22,7 @@ const ReviewsService = {
       .where("id", id)
       .first();
   },
+  
   serializeReview(review) {
     return {
       id: review.id,
@@ -29,7 +32,7 @@ const ReviewsService = {
       date_posted: review.date_posted,
       game_id: review.game_id,
       user_id: review.user_id
-    }
+    };
   }
 };
 
