@@ -8,9 +8,9 @@ TRUNCATE
 
 INSERT INTO gamesnet_users(fullname, username, password)
 VALUES
-  ('Test User', 'testuser', 'Test123!'),
-  ('John Smith', 'smitty', 'Pa$sword1'),
-  ('Geoff George', 'GG3', 'Hello!23');
+  ('Test User', 'testuser', '$2a$12$zkbanq.gL/jqCT5vpDBZKOllpMAHYZVxZp8SsyndVNdJ1tZryHNsO'),
+  ('John Smith', 'smitty', '$2a$12$68B48OpNd/Mow.7NYBz8QOgZANMXEHU95yd9hAdTqxGFIK9Y4wVPi'),
+  ('Geoff George', 'GG3', '$2a$12$U71BqKYwRHbcGr/rQjkYDOjunaEVhtJVEJZkXiF4o1yfJVXvOl6A6');
   
 INSERT INTO gamesnet_games(title, avg_rating, description, rated, platforms, poster_id)
 VALUES
@@ -42,8 +42,8 @@ VALUES
   (4, 1, 'Cool game', 8, 'review'),
   (3, 3, 'Love it', 9, 'review'),
   (3, 1, 'All time classic', 7, 'review'),
-  (2, 2, 'Kinda sucks sometimes', 6, 'review'),
+  (2, 3, 'Kinda sucks sometimes', 6, 'review'),
   (5, 3, 'Awesome', 10, 'review'),
-  (4, 1, 'Just like Fallout', 9, 'review');
+  (4, 2, 'Just like Fallout', 9, 'review');
 
 COMMIT;
