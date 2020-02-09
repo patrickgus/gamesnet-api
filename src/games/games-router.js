@@ -1,12 +1,14 @@
 const path = require("path");
 const express = require("express");
 const GamesService = require("./games-service");
+const { requireAuth } = require('../middleware/jwt-auth')
 
 const gamesRouter = express.Router();
 const jsonParser = express.json();
 
 gamesRouter
   .route("/")
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     GamesService.getAllGames(knexInstance)
@@ -18,15 +20,12 @@ gamesRouter
   .post(jsonParser, (req, res, next) => {
     const {
       title,
-      avg_rating,
       description,
       rated,
-      platforms,
-      poster_id
+      platforms
     } = req.body;
     const newGame = {
       title,
-      avg_rating,
       description,
       rated,
       platforms
@@ -37,7 +36,9 @@ gamesRouter
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         });
-    newGame.poster_id = poster_id;
+
+    newGame.poster_id = req.user.id;
+
     GamesService.insertGame(req.app.get("db"), newGame)
       .then(game => {
         res
@@ -50,6 +51,7 @@ gamesRouter
 
 gamesRouter
   .route("/:game_id")
+  .all(requireAuth)
   .all(checkGameExists)
   .get((req, res, next) => {
     res.json(GamesService.serializeGame(res.game));
@@ -82,6 +84,7 @@ gamesRouter
 
 gamesRouter
   .route("/:game_id/reviews/")
+  .all(requireAuth)
   .all(checkGameExists)
   .get((req, res, next) => {
     GamesService.getReviewsForGame(req.app.get("db"), req.params.game_id)

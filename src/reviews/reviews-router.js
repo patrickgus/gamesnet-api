@@ -1,12 +1,14 @@
 const path = require("path");
 const express = require("express");
 const ReviewsService = require("./reviews-service");
+const { requireAuth } = require('../middleware/jwt-auth')
 
 const reviewsRouter = express.Router();
 const jsonParser = express.json();
 
 reviewsRouter
   .route("/")
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     ReviewsService.getAllReviews(knexInstance)
@@ -16,8 +18,8 @@ reviewsRouter
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { title, rating, review, game_id, user_id, date_posted } = req.body;
-    const newReview = { title, rating, review, game_id, user_id };
+    const { title, rating, review, game_id } = req.body;
+    const newReview = { title, rating, review, game_id };
 
     for (const [key, value] of Object.entries(newReview))
       if (value == null)
@@ -25,7 +27,7 @@ reviewsRouter
           error: { message: `Missing '${key}' in request body` }
         });
 
-    newReview.date_posted = date_posted;
+    newReview.user_id = req.user.id;
 
     ReviewsService.insertReview(req.app.get("db"), newReview)
       .then(review => {
