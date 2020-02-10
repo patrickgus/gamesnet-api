@@ -2,7 +2,7 @@ const knex = require("knex");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
-describe.only("Games Endpoints", function() {
+describe("Games Endpoints", function() {
   let db;
 
   const { testUsers, testGames, testReviews } = helpers.makeGamesFixtures();
@@ -24,7 +24,7 @@ describe.only("Games Endpoints", function() {
   describe(`GET /api/games`, () => {
     context(`Given no games`, () => {
       beforeEach(() => helpers.seedUsers(db, testUsers));
-      
+
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get("/api/games")
@@ -38,9 +38,9 @@ describe.only("Games Endpoints", function() {
         helpers.seedGamesTables(db, testUsers, testGames, testReviews)
       );
 
-      it.only("responds with 200 and all of the games", () => {
+      it("responds with 200 and all of the games", () => {
         const expectedGames = testGames.map(game =>
-          helpers.makeExpectedGame(testUsers, game)
+          helpers.makeExpectedGame(testUsers, game, testReviews)
         );
         return supertest(app)
           .get("/api/games")
@@ -62,6 +62,7 @@ describe.only("Games Endpoints", function() {
       it("removes XSS attack content", () => {
         return supertest(app)
           .get(`/api/games`)
+          .set("Authorization", helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
             expect(res.body[0].title).to.eql(expectedGame.title);
@@ -93,7 +94,8 @@ describe.only("Games Endpoints", function() {
         const gameId = 2;
         const expectedGame = helpers.makeExpectedGame(
           testUsers,
-          testGames[gameId - 1]
+          testGames[gameId - 1],
+          testReviews
         );
 
         return supertest(app)
@@ -116,6 +118,7 @@ describe.only("Games Endpoints", function() {
       it("removes XSS attack content", () => {
         return supertest(app)
           .get(`/api/games/${maliciousGame.id}`)
+          .set("Authorization", helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
             expect(res.body.title).to.eql(expectedGame.title);
@@ -163,7 +166,7 @@ describe.only("Games Endpoints", function() {
     beforeEach(() => helpers.seedUsers(db, testUsers));
 
     it(`creates a game, responding with 201 and the new game`, function() {
-      this.retries(3);
+      const testUser = testUsers[0];
       const newGame = {
         title: "Test game",
         description: "A game of tests",
@@ -172,7 +175,7 @@ describe.only("Games Endpoints", function() {
       };
       return supertest(app)
         .post("/api/games")
-        .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+        .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(newGame)
         .expect(201)
         .expect(res => {
@@ -186,10 +189,22 @@ describe.only("Games Endpoints", function() {
           const actual = new Date(res.body.date_added).toLocaleString();
           expect(actual).to.eql(expected);
         })
-        .then(postRes =>
-          supertest(app)
-            .get(`/api/games/${postRes.body.id}`)
-            .expect(postRes.body)
+        .expect(res =>
+          db
+            .from("gamesnet_games")
+            .select("*")
+            .where({ id: res.body.id })
+            .first()
+            .then(row => {
+              expect(row.title).to.eql(newGame.title);
+              expect(row.description).to.eql(newGame.description);
+              expect(row.rated).to.eql(newGame.rated);
+              expect(row.platforms).to.eql(newGame.platforms);
+              expect(row.user_id).to.eql(testUser.id);
+              const expectedDate = new Date().toLocaleString();
+              const actualDate = new Date(row.date_added).toLocaleString();
+              expect(actualDate).to.eql(expectedDate);
+            })
         );
     });
 
@@ -212,28 +227,6 @@ describe.only("Games Endpoints", function() {
           .send(newGame)
           .expect(400, {
             error: { message: `Missing '${field}' in request body` }
-          });
-      });
-    });
-
-    context(`Given an XSS attack game`, () => {
-      const testUser = helpers.makeUsersArray()[1];
-      const { maliciousGame, expectedGame } = helpers.makeMaliciousGame(
-        testUser
-      );
-
-      beforeEach("insert malicious game", () => {
-        return helpers.seedMaliciousGame(db, testUser, maliciousGame);
-      });
-
-      it("removes XSS attack content from response", () => {
-        return supertest(app)
-          .post(`/api/games`)
-          .send(maliciousGame)
-          .expect(201)
-          .expect(res => {
-            expect(res.body.title).to.eql(expectedGame.title);
-            expect(res.body.description).to.eql(expectedGame.description);
           });
       });
     });
