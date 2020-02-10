@@ -136,10 +136,6 @@ function makeExpectedGame(users, game, reviews = []) {
   const number_of_reviews = gameReviews.length;
   const avg_rating = calculateAverageRating(gameReviews);
 
-  console.log("gameReviews", gameReviews);
-  console.log("number_of_reviews", number_of_reviews);
-  console.log("avg_rating", avg_rating);
-
   return {
     id: game.id,
     title: game.title,
@@ -148,14 +144,14 @@ function makeExpectedGame(users, game, reviews = []) {
     rated: game.rated,
     platforms: game.platforms,
     date_added: game.date_added,
-    number_of_reviews,
-    avg_rating,
     user: {
       id: user.id,
       username: user.username,
       fullname: user.fullname,
       date_joined: user.date_joined
-    }
+    },
+    number_of_reviews,
+    avg_rating
   };
 }
 
