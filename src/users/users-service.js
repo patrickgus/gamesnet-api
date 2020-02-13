@@ -45,7 +45,7 @@ const UsersService = {
       fullname: xss(user.fullname),
       username: xss(user.username),
       date_joined: new Date(user.date_joined)
-    }
+    };
   }
 };
 
