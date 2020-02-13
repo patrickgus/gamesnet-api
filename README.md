@@ -1,30 +1,69 @@
-# Express Boilerplate!
+# GamesNet
 
-This is a boilerplate project used for starting new projects!
+## Summary
 
-## Set up
+GamesNet is an app where users can rate and review video games. Users also add the video games that they want to get reviewed. This gives people a chance to get an opinion of a video game before they decide to buy it. As games are being rated, the game list will update the average rating for each game. The list of games can be sorted alphabetically or by rating from highest to lowest.
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+## Built with:
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+  - React.js
+  - Node.js
+  - Express.js
+  - PostgreSQL
+  - REST API
+  - CSS
+  - HTML
+  - jQuery
+  - Mocha
+  - Chai
 
-## Scripts
+## Screenshots of the user's journey
 
-Start the application `npm start`
+To demo the app you can use these test user credentials:
+  - username: testuser
+  - password: Test123!
 
-Start nodemon for the application `npm run dev`
+Or you could make your own user profile if you like. You would just need to supply your full name, a username, and a protected password
+_We do not share any personal information with anyone else._
 
-Run the tests `npm test`
+### Landing Page:
+img
 
-## Deploying
+If you click on the 'Register' link in the top, right-hand corner of the page, you will be brought to the Registration Page.
+### Registration Page:
+img
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+If you successfully log in with a correct username and password, you will be brought to the Game List page.
+### Game List Page:
+img
 
-## Seeding tables
+Clicking on 'Add Game' will let you add a new game to the list to be reviewed.
+### Add Game Page:
+img
 
-To seed tables use SQL command  `\i 'C:/Users/patri/Projects/gamesnet-api/seeds/seed.gamesnet_tables.sql'` in gamesnet database.
+Clicking on the title or cover image of a game in the list will bring you to the Game Review Page
+### Game Review Page:
+img
+
+If you want to add a review, click on the 'Add Review' link and it will take you to the Add Review page
+### Add Review Page:
+img
+
+## API Docs
+
+GET and POST fetch requests are made via RESTful API.
+
+Base API URL is 'https://limitless-fortress-68165.herokuapp.com/api'
+
+### Endpoints:
+
+  - '/games'
+  - '/reviews'
+  - '/users'
+  - '/auth'
+
+## What's Next
+
+  - Add input in AddGame form that allows users to add the cover art for a game
+  - Add Public Forum section where users can ask and answer each others questions
+  
