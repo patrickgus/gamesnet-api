@@ -1,5 +1,7 @@
 # GamesNet
 
+[Live Page](https://gamesnet-app.now.sh/)
+
 ## Summary
 
 GamesNet is an app where users can rate and review video games. Users also add the video games that they want to get reviewed. This gives people a chance to get an opinion of a video game before they decide to buy it. As games are being rated, the game list will update the average rating for each game. The list of games can be sorted alphabetically or by rating from highest to lowest.
