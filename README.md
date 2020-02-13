@@ -23,7 +23,7 @@ To demo the app you can use these test user credentials:
   - username: testuser
   - password: Test123!
 
-Or you could make your own user profile if you like. You would just need to supply your full name, a username, and a protected password
+Or you could make your own user profile if you like. You would just need to supply your full name, a username, and a protected password.
 _We do not share any personal information with anyone else._
 
 ### Landing Page:
