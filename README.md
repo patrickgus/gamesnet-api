@@ -29,27 +29,22 @@ Or you could make your own user profile if you like. You would just need to supp
 _We do not share any personal information with anyone else._
 
 ### Landing Page:
-![GamesNet-LandingPage](https://user-images.githubusercontent.com/53308172/74409709-22d18b00-4dec-11ea-9185-e59d291ffd73.png)
-
+![GamesNet-LandingPage](https://user-images.githubusercontent.com/53308172/74491081-780aac80-4e7f-11ea-90c2-47e03112d0bd.png)
 If you click on the 'Register' link in the top, right-hand corner of the page, you will be brought to the Registration Page.
 ### Registration Page:
-![GamesNet-RegistrationPage](https://user-images.githubusercontent.com/53308172/74409734-311fa700-4dec-11ea-9a46-e705ef59410e.png)
-
+![GamesNet-RegistrationPage](https://user-images.githubusercontent.com/53308172/74491093-7e008d80-4e7f-11ea-9d87-f98b2c1b68a2.png)
 If you successfully log in with a correct username and password, you will be brought to the Game List page.
 ### Game List Page:
-![GamesNet-GameListPage](https://user-images.githubusercontent.com/53308172/74409739-35e45b00-4dec-11ea-9615-86b09a3395d7.png)
-
+![GamesNet-GameListPage](https://user-images.githubusercontent.com/53308172/74491100-85c03200-4e7f-11ea-93b3-573479e8a19c.png)
 Clicking on 'Add Game' will let you add a new game to the list to be reviewed.
 ### Add Game Page:
-![GamesNet-AddGamePage](https://user-images.githubusercontent.com/53308172/74409746-3b41a580-4dec-11ea-94c4-b6201578773b.png)
-
+![GamesNet-AddGamePage](https://user-images.githubusercontent.com/53308172/74491108-8b1d7c80-4e7f-11ea-95e9-c4eba94bc967.png)
 Clicking on the title or cover image of a game in the list will bring you to the Game Review Page
 ### Game Review Page:
-![GamesNet-GameReviewPage](https://user-images.githubusercontent.com/53308172/74409761-41d01d00-4dec-11ea-86d2-03a1098686b2.png)
-
+![GamesNet-GameReviewPage](https://user-images.githubusercontent.com/53308172/74491112-8eb10380-4e7f-11ea-9bd3-45a061fab606.png)
 If you want to add a review, click on the 'Add Review' link and it will take you to the Add Review page
 ### Add Review Page:
-![GamesNet-AddReviewPage](https://user-images.githubusercontent.com/53308172/74409765-44cb0d80-4dec-11ea-9f52-819cfd4c572a.png)
+![GamesNet-AddReviewPage](https://user-images.githubusercontent.com/53308172/74491114-907ac700-4e7f-11ea-8751-0b66d030703e.png)GamesNet-AddReviewPage](https://user-images.githubusercontent.com/53308172/74409765-44cb0d80-4dec-11ea-9f52-819cfd4c572a.png)
 
 ## API Docs
 
