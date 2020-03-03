@@ -4,22 +4,22 @@ const Treeize = require("treeize");
 const GamesService = {
   getAllGames(db) {
     return db
-      .from("gamesnet_games AS gam")
+      .from("gamesnet_games AS game")
       .select(
-        "gam.id",
-        "gam.title",
-        "gam.cover",
-        "gam.description",
-        "gam.rated",
-        "gam.platforms",
-        "gam.date_added",
+        "game.id",
+        "game.title",
+        "game.cover",
+        "game.description",
+        "game.rated",
+        "game.platforms",
+        "game.date_added",
         ...userFields,
         db.raw(`count(DISTINCT rev) AS number_of_reviews`),
         db.raw(`ROUND(AVG(rev.rating), 1) AS avg_rating`)
       )
-      .leftJoin("gamesnet_reviews AS rev", "gam.id", "rev.game_id")
-      .leftJoin("gamesnet_users AS usr", "gam.user_id", "usr.id")
-      .groupBy("gam.id", "usr.id");
+      .leftJoin("gamesnet_reviews AS rev", "game.id", "rev.game_id")
+      .leftJoin("gamesnet_users AS user", "game.user_id", "user.id")
+      .groupBy("game.id", "user.id");
   },
 
   insertGame(db, newGame) {
@@ -34,7 +34,7 @@ const GamesService = {
 
   getById(db, id) {
     return GamesService.getAllGames(db)
-      .where("gam.id", id)
+      .where("game.id", id)
       .first();
   },
 
@@ -50,8 +50,8 @@ const GamesService = {
         ...userFields
       )
       .where("rev.game_id", game_id)
-      .leftJoin("gamesnet_users AS usr", "rev.user_id", "usr.id")
-      .groupBy("rev.id", "usr.id");
+      .leftJoin("gamesnet_users AS user", "rev.user_id", "user.id")
+      .groupBy("rev.id", "user.id");
   },
 
   serializeGames(games) {
@@ -102,10 +102,10 @@ const GamesService = {
 };
 
 const userFields = [
-  "usr.id AS user:id",
-  "usr.username AS user:username",
-  "usr.fullname AS user:fullname",
-  "usr.date_joined AS user:date_joined"
+  "user.id AS user:id",
+  "user.username AS user:username",
+  "user.fullname AS user:fullname",
+  "user.date_joined AS user:date_joined"
 ];
 
 module.exports = GamesService;
